@@ -1,6 +1,7 @@
 #!/bin/bash
 
 notesDir='/home/Jason/notes/'
+fileExtension='.md'
 
 if [[ $# > 0 ]] 
 then
@@ -8,7 +9,7 @@ then
     then
         # assume number argument is notes from $1 days ago
         date=$(( $(date +%Y%m%d) - $1))
-        noteFile="$notesDir"daily/"$date"
+        noteFile="$notesDir"daily/"$date$fileExtension"
     else
         # if not just one number for daysAgo, then assume file path, where
         # last argument is file name
@@ -24,12 +25,17 @@ then
             mkdir -p "$noteFile"
         fi
 
-        noteFile="$noteFile""${@: -1}"
+        if [[ "${@: -1}" =~ [a-zA-Z0-9]+\.[a-zA-Z0-9]+ ]]
+        then
+            noteFile="$noteFile${@: -1}"
+        else
+            noteFile="$noteFile${@: -1}$fileExtension"
+        fi
     fi
 else
     # default behavior, pull up today's note file
     date=$(date +%Y%m%d)
-    noteFile="$notesDir"daily/"$date"
+    noteFile="$notesDir"daily/"$date$fileExtension"
 fi
 
 
